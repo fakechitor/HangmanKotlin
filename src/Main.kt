@@ -23,7 +23,7 @@ private fun askUserAboutStartGame(){
         if (isStartCommand(answerFromUser)){
             startGameLoop()
         }
-        else if (!isStartCommand(answerFromUser)){
+        else if (isEndCommand(answerFromUser)){
             break
         }
         else{
@@ -42,6 +42,10 @@ private fun isStartCommand(answerFromUser:String) : Boolean {
     return answerFromUser.toLowerCase() == COMMAND_START_ENG || answerFromUser.toLowerCase() == COMMAND_START_RUS;
 }
 
+
+private fun isEndCommand(answerFromUser:String) : Boolean {
+    return answerFromUser.toLowerCase() == COMMAND_QUIT_ENG || answerFromUser.toLowerCase() == COMMAND_QUIT_RUS;
+}
 private fun startGameLoop(){
     val gameWord = createWord()
     var guessedPart = MutableList(gameWord.length){"*"}
