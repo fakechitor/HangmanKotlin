@@ -3,12 +3,12 @@ import kotlin.random.Random
 
 const val AMOUNT_OF_WORDS = 21974
 const val AMOUNT_OF_TRIES = 7
-val random = Random(System.currentTimeMillis())
-val ALL_RUSSIAN_LETTERS = listOf("а","А","б","Б","в","В","г","Г","д","Д","е","Е","ё","Ё","ж","Ж","з","З","и","И","й","Й","к","К","л","Л","м","М","н","Н","о","О","п","П","р","Р","с","С","т","Т","у","У","ф","Ф","х","Х","ц","Ц","ч","Ч","ш","Ш","щ","Щ","ъ","Ъ","ы","Ы","ь","Ь","э","Э","ю","Ю","я","Я")
-var failedTries = 0
-var amountOfWins = 0
-var amountOfLosses = 0
-var enteredLetters : List<String> = listOf()
+private val random = Random(System.currentTimeMillis())
+
+private var failedTries = 0
+private var amountOfWins = 0
+private var amountOfLosses = 0
+private var enteredLetters : List<String> = listOf()
 
 fun main(){
     checkUserInput()
@@ -46,11 +46,11 @@ fun startGameLoop(){
     failedTries = 0
     enteredLetters = listOf()
     printGameEndInfo(guessedPart, gameWord)
-    getGameStats()
+    printGameStats()
 
 }
 
-fun getGameStats() {
+fun printGameStats() {
     val totalGames = amountOfLosses + amountOfWins
     val percentage = (amountOfWins.toDouble()/totalGames.toDouble()) * 100.0
     println("Проведено игр всего: $totalGames")
