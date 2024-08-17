@@ -27,7 +27,7 @@ private fun askUserAboutStartGame(){
             break
         }
         else{
-            println("Введите 'y'/'д' или 'n'/'н'")
+            println("Введите '$COMMAND_START_ENG'/'$COMMAND_START_RUS' или '$COMMAND_QUIT_ENG'/'$COMMAND_QUIT_RUS'")
         }
     }
 }
