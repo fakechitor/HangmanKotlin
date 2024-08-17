@@ -3,24 +3,27 @@ import kotlin.random.Random
 
 const val AMOUNT_OF_WORDS = 21974
 const val AMOUNT_OF_TRIES = 7
+private const val COMMAND_START_ENG = "y"
+private const val COMMAND_START_RUS = "д"
+private const val COMMAND_QUIT_ENG = "n"
+private const val COMMAND_QUIT_RUS = "н"
 private val random = Random(System.currentTimeMillis())
-
 private var failedTries = 0
 private var amountOfWins = 0
 private var amountOfLosses = 0
 private var enteredLetters : List<String> = listOf()
 
 fun main(){
-    checkUserInput()
+    askUserAboutStartGame()
 }
 
-fun checkUserInput(){
+private fun askUserAboutStartGame(){
     while(true) {
         val answerFromUser = getUserInputForStart()
-        if (answerFromUser.toLowerCase() == "y" || answerFromUser.toLowerCase() == "д"){
+        if (isStartCommand(answerFromUser)){
             startGameLoop()
         }
-        else if (answerFromUser.toLowerCase() == "n" || answerFromUser.toLowerCase() == "н"){
+        else if (!isStartCommand(answerFromUser)){
             break
         }
         else{
@@ -29,17 +32,20 @@ fun checkUserInput(){
     }
 }
 
-fun getUserInputForStart() : String{
-    println("Вы хотите начать игру? (y | д - да ) (n | н - нет)")
+private fun getUserInputForStart() : String{
+    println("Вы хотите начать игру? ($COMMAND_START_ENG | $COMMAND_START_RUS - да ) ($COMMAND_QUIT_ENG | $COMMAND_QUIT_RUS - нет)")
     val answer = readlnOrNull().toString()
     return answer
 }
 
-fun startGameLoop(){
+private fun isStartCommand(answerFromUser:String) : Boolean {
+    return answerFromUser.toLowerCase() == COMMAND_START_ENG || answerFromUser.toLowerCase() == COMMAND_START_RUS;
+}
+
+private fun startGameLoop(){
     val gameWord = createWord()
     var guessedPart = MutableList(gameWord.length){"*"}
     while (failedTries < 7 && guessedPart.contains("*")){
-        println(gameWord)
         printGameData(failedTries, guessedPart.joinToString(""))
         guessedPart = makeTurn(gameWord, guessedPart)
     }
@@ -50,7 +56,7 @@ fun startGameLoop(){
 
 }
 
-fun printGameStats() {
+private fun printGameStats() {
     val totalGames = amountOfLosses + amountOfWins
     val percentage = (amountOfWins.toDouble()/totalGames.toDouble()) * 100.0
     println("Проведено игр всего: $totalGames")
@@ -59,8 +65,7 @@ fun printGameStats() {
     println("Процент побед: $percentage%")
     println()
 }
-
-fun printGameEndInfo(guessedPart: MutableList<String>, gameWord: String) {
+private fun printGameEndInfo(guessedPart: MutableList<String>, gameWord: String) {
     println()
     if (guessedPart.contains("*")){
         println("Вы проиграли :(")
@@ -75,7 +80,7 @@ fun printGameEndInfo(guessedPart: MutableList<String>, gameWord: String) {
 
 }
 
-fun makeTurn(word: String, guessedPart: MutableList<String>) : MutableList<String>{
+private fun makeTurn(word: String, guessedPart: MutableList<String>) : MutableList<String>{
     val enteredLetter = getLetterInput()
     var flag = false
     for (i  in 0..<word.length){
@@ -95,7 +100,7 @@ fun makeTurn(word: String, guessedPart: MutableList<String>) : MutableList<Strin
 
 }
 
-fun printGameData(badTries : Int, currentWord : String){
+private fun printGameData(badTries : Int, currentWord : String){
     println("Текущее состояние виселицы:")
     println(HANGMAN_PICS[badTries])
     println("Слово: $currentWord")
@@ -105,20 +110,23 @@ fun printGameData(badTries : Int, currentWord : String){
     println()
 }
 
-fun getLetterInput() : String{
+private fun getLetterInput() : String{
     while (true){
         print("Введите букву: ")
-        val userInput = readln()
-        if (userInput.isNotEmpty() && userInput in ALL_RUSSIAN_LETTERS) {
-            return userInput
+        val userInput = readln().toCharArray()
+        if (isCyrillic(userInput[0])) {
+            return userInput[0].toString()
         }
-        else{
-            println("Введите букву русского алфавита!")
-        }
+        println("Введите букву русского алфавита!")
+
     }
 }
 
-fun createWord() : String{
+private fun isCyrillic(symbol: Char) : Boolean {
+    return symbol in 'а'..'я' || symbol in 'А'..'Я'
+}
+
+private fun createWord() : String{
     val randomNumber = random.nextInt(AMOUNT_OF_WORDS)
     val words = File("src/words.txt").bufferedReader()
     var word = ""
@@ -126,6 +134,4 @@ fun createWord() : String{
         word = words.readLine()
     }
     return word
-
-
 }
